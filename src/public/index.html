@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentra Button</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            color: white;
+        }
+        button {
+            padding: 20px 40px;
+            font-size: 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <button id="triggerBtn">Say Hello 👋</button>
+
+    <script>
+        document.getElementById('triggerBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('triggerBtn');
+            const originalText = btn.innerText;
+            
+            try {
+                btn.disabled = true;
+                btn.innerText = "Sending...";
+                
+                const response = await fetch('/trigger', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    btn.innerText = "Sent!";
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    }, 1000);
+                } else {
+                    btn.innerText = "Error";
+                    console.error('Trigger failed');
+                    setTimeout(() => {
+                        btn.innerText = originalText;
+                        btn.disabled = false;
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                btn.innerText = "Error";
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
